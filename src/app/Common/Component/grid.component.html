@@ -1,0 +1,51 @@
+<div class="panel panel-default">
+    <div class="panel-heading">Customers
+        <div class="pull-right">
+            <a (click)="is_edit=!is_edit;">
+                <span *ngIf="!is_edit" class="glyphicon glyphicon-plus"></span>
+                <span *ngIf="is_edit" class="glyphicon glyphicon-minus" style="color: red"></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div *ngIf="is_edit">
+            <div class="alert alert-danger" *ngIf="message?.length>0">
+                <p *ngFor="let msg of message">
+                    {{ msg }}
+                </p>
+            </div>
+            <div *ngFor="let col of map_data; let i = index">
+                <div *ngIf="col.id!=='id'" class="form-group">
+                    <label for="col.id">{{columns[i]}}:</label>
+                    <input [type]="col.type" class="form-control" id="col.id" [required]="col.required" name="name" #name="ngModel" [ngModel]="property[col.id]"
+                        (ngModelChange)="property[col.id]=$event; Validate($event);">
+
+                    <strong class="bg-danger" [hidden]="show_button ? !name.invalid : (name.valid || name.pristine)">required</strong>
+                </div>
+            </div>
+            <button [disabled]="!show_button" class="btn btn-primary" (click)="Save()">Save</button>
+        </div>
+        <table *ngIf="!is_edit" class="table table-hover">
+            <thead>
+                <th *ngFor="let col of columns">
+                    {{ col }}
+                </th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of rows">
+                    <td *ngFor="let col of map_data">
+                        <div [ngSwitch]="col.type">
+                            <div *ngSwitchDefault>
+                                {{ row[col.id] }}
+                            </div>
+                            <div *ngSwitchCase="'date'">
+                                {{ row[col.id] | date: 'MMM dd yyyy' }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
