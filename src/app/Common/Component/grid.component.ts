@@ -23,6 +23,10 @@ export class GridComponent implements OnChanges {
     private action_msg: string;
     @Input() property: any = {};
 
+    constructor() {
+        this.action_alert = false;
+    }
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['rows']) {
             this.is_edit = false;
@@ -46,7 +50,7 @@ export class GridComponent implements OnChanges {
     }
 
     Delete(id: Number, name: string) {
-        const _delete = confirm('Are you sure want to delete customer: ' + name);
+        const _delete = confirm('Are you sure want to delete record: ' + name);
         if (_delete) {
             this.deleteClick.emit(id);
             this.action_msg = 'Customer deleted successfully!';

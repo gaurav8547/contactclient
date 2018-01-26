@@ -7,12 +7,13 @@ import { appRoutes } from './app.routes';
 import { AppComponent } from './app.component';
 import { CustomerComponent } from './View/customer.component';
 import { GridComponent } from './Common/Component/grid.component';
+import { SupplierComponent } from './View/supplier.component';
 
 const modules = [BrowserModule, FormsModule, HttpModule ];
 
 @NgModule({
   declarations: [
-    AppComponent, CustomerComponent, GridComponent
+    AppComponent, CustomerComponent, SupplierComponent, GridComponent
   ],
   imports: [
     ...modules,
