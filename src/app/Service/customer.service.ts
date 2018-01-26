@@ -2,34 +2,49 @@ import { Injectable } from '@angular/core';
 import { Http, RequestOptions } from '@angular/http';
 import { ICustomer } from '../Interface/ICustomer';
 import { customer_service, options } from './service.config';
+import { Helper } from '../Common/helper';
 
 @Injectable()
 export class CustomerService {
-    constructor(private http: Http) {}
+    constructor(private http: Http) { }
 
     private api: string = customer_service;
     Get(): Promise<any> {
         return this.http
-        .get(customer_service)
-        .toPromise()
-        .then(this.extractData)
-        .catch(this.handleError);
+            .get(customer_service)
+            .toPromise()
+            .then(Helper.extractData)
+            .catch(Helper.handleError);
     }
 
     Save(customer: ICustomer): Promise<any> {
-        return this.http.post(this.api, JSON.stringify(customer), options)
-        .toPromise()
-        .then(this.extractData)
-        .catch(this.handleError);
+        const body = {
+            Id: customer.id,
+            FirstName: customer.firstName,
+            LastName: customer.lastName,
+            BirthDay: customer.birthDay,
+            Email: customer.email
+        };
+        return this.http.post(this.api, JSON.stringify(body), options)
+            .toPromise()
+            .then(Helper.extractData)
+            .catch(Helper.handleError);
     }
 
-    extractData(res: any) {
-        const body = res.json();
-        return body || {};
+    Edit(id: number) {
+        options.params.set('id', id.toString());
+        return this.http.get(this.api + '/' + id, options)
+            .toPromise()
+            .then(Helper.extractData)
+            .catch(Helper.handleError);
     }
 
-    handleError(err: any) {
-        console.error('An error occurred', err);
-        return Promise.reject(err.message || err);
+    Delete(id: number) {
+        options.params.set('id', id.toString());
+
+        return this.http.delete(this.api, options)
+            .toPromise()
+            .then(Helper.extractData)
+            .catch(Helper.handleError);
     }
 }

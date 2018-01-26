@@ -9,6 +9,11 @@
     </div>
 
     <div class="panel-body">
+        
+        <div *ngIf="action_alert" class="alert alert-success">
+            <a class="close" (click)="action_alert=false">&times;</a>
+            {{ action_msg }}
+        </div>
         <div *ngIf="is_edit">
             <div class="alert alert-danger" *ngIf="message?.length>0">
                 <p *ngFor="let msg of message">
@@ -18,23 +23,26 @@
             <div *ngFor="let col of map_data; let i = index">
                 <div *ngIf="col.id!=='id'" class="form-group">
                     <label for="col.id">{{columns[i]}}:</label>
-                    <input [type]="col.type" class="form-control" id="col.id" [required]="col.required" name="name" #name="ngModel" [ngModel]="property[col.id]"
-                        (ngModelChange)="property[col.id]=$event; Validate($event);">
+                    <input class="form-control" id="col.id" [required]="col.required" name="name" #name="ngModel" [ngModel]="property[col.id]"
+                        (ngModelChange)="property[col.id]=$event;" (blur)="Validate(col.id);">
 
-                    <strong class="bg-danger" [hidden]="show_button ? !name.invalid : (name.valid || name.pristine)">required</strong>
+                    <strong class="bg-danger" [hidden]="showerrors ? !name.invalid : (name.valid || name.pristine)">required</strong>
                 </div>
             </div>
             <button [disabled]="!show_button" class="btn btn-primary" (click)="Save()">Save</button>
         </div>
         <table *ngIf="!is_edit" class="table table-hover">
             <thead>
-                <th *ngFor="let col of columns">
+                <th *ngFor="let col of columns" [hidden]="col==='ID'" >
                     {{ col }}
+                </th>
+                <th>
+
                 </th>
             </thead>
             <tbody>
                 <tr *ngFor="let row of rows">
-                    <td *ngFor="let col of map_data">
+                    <td *ngFor="let col of map_data" [hidden]="col.id==='id'">
                         <div [ngSwitch]="col.type">
                             <div *ngSwitchDefault>
                                 {{ row[col.id] }}
@@ -43,6 +51,14 @@
                                 {{ row[col.id] | date: 'MMM dd yyyy' }}
                             </div>
                         </div>
+                    </td>
+                    <td>
+                        <a>
+                            <span class="glyphicon glyphicon-edit" (click)="Edit(row['id'])"></span>
+                        </a>
+                        <a>
+                            <span class="glyphicon glyphicon-remove" (click)="Delete(row['id'], row['firstName']+ ' '+row['lastName'])"></span>
+                        </a>
                     </td>
                 </tr>
             </tbody>
